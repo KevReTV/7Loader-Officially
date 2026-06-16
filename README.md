@@ -1,68 +1,92 @@
 # 7Loader
 
-7Loader ist ein Windows-Desktop-Launcher für **7 Days to Die**. Die Anwendung startet das Spiel, verwaltet Spielprofile, synchronisiert profilbezogene Spielstände und Welten, installiert Mods aus `7daystodiemods.com` und speichert Server für den direkten Beitritt.
+7Loader is a Windows desktop launcher for **7 Days to Die**. It helps you start the game, keep separate play profiles, switch profile-specific saves and worlds, install mods, and store servers for quick joining.
 
-Das Projekt ist eine WPF-Anwendung auf Basis von `.NET 10` mit dem Assembly-Namen `7Loader` und dem Root-Namespace `SevenLoader`.
+German version: [README.de.md](README.de.md)
 
-## Hauptfunktionen
+## Requirements
 
-- **Spielstart**: Startet 7 Days to Die aus dem konfigurierten Installationsordner. Je nach Profil wird Anti-Cheat bevorzugt über `start_protected_game.exe` bzw. `7DaysToDie_EAC.exe` oder ohne Anti-Cheat über `7DaysToDie.exe` gestartet.
-- **Startoptionen**: Unterstützt globale Parameter wie News-Screen überspringen, Intro überspringen, randloses Fenster, Quick Continue, Spielsprache, XInput deaktivieren, native Eingabe deaktivieren, GameSense deaktivieren und eigene Startargumente.
-- **Profile**: Erlaubt mehrere Spielprofile mit eigenem Namen, Icon, Anti-Cheat-Einstellung und Mod-Zuweisungen.
-- **Profil-Spielstände**: Synchronisiert pro Profil die Ordner `Saves`, `GeneratedWorlds` und `SavesLocal` aus `%APPDATA%\7DaysToDie`. Vorhandene Live-Daten werden vor dem Start gesichert und nach dem Spielende wiederhergestellt.
-- **Mod-Verwaltung**: Lädt Mod-Daten von `https://7daystodiemods.com/discover`, zeigt Details, Kategorien, Versionen, Bilder, Dateigrößen und Update-Hinweise an.
-- **Mod-Downloads**: Lädt Mod-Archive mit Fortschrittsanzeige herunter, speichert lokale Manifeste und legt optionale Offline-Bilder ab.
-- **Mod-Installation**: Entpackt aktuell `.zip`-Archive, sucht installierbare Ordner mit `ModInfo.xml` und kopiert die dem aktiven Profil zugewiesenen Mods vor dem Spielstart in den `Mods`-Ordner des Spiels.
-- **Server**: Speichert Servername, Adresse, Port, optionales Passwort und Favoritenstatus. Der Beitritt erfolgt über eine `steam://connect/...`-URI.
-- **Darstellung und Sprache**: Bietet ein dunkles und helles Theme sowie deutsche und englische Ressourcen.
-- **Startfenster**: Zeigt beim Programmstart ein eigenes Ladefenster mit Fortschritt und Statusmeldungen.
+- Windows 10 or newer
+- A local installation of **7 Days to Die**
+- **.NET SDK 10.0 for Windows** is required and is not included in this publish package. Download it from the official Microsoft .NET page: [Download .NET 10.0](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
+- Internet access is required for the mod catalog, mod downloads, and optional translation features.
 
-## Datenablage
+## Included Files
 
-7Loader speichert seine eigenen Daten unter:
+This publish folder contains the runnable 7Loader application.
+
+- `7Loader.exe`: starts the launcher
+- `README.md`: English user guide
+- `README.de.md`: German user guide
+
+Depending on the build, debug files such as `7Loader.pdb` may also be present. They are not required for normal use.
+
+## First Start
+
+1. Install the required .NET SDK 10.0 if it is not already installed.
+2. Start `7Loader.exe`.
+3. Select your **7 Days to Die** installation folder if 7Loader does not find it automatically.
+4. Create or select a profile.
+5. Configure launch options, mods, and servers as needed.
+
+7Loader looks for common Steam installation paths and Steam library folders. A valid game folder must contain the normal 7 Days to Die launch files.
+
+## Main Features
+
+- **Game launch**: Starts 7 Days to Die from the configured installation folder.
+- **Anti-Cheat control**: Uses the protected game launcher when Anti-Cheat is enabled for the active profile, or starts the normal game executable when Anti-Cheat is disabled.
+- **Launch options**: Supports options such as skipping the news screen, skipping the intro, borderless window mode, quick continue, game language, disabled XInput, disabled native input, disabled GameSense, and custom launch arguments.
+- **Profiles**: Stores multiple game profiles with their own name, icon, Anti-Cheat setting, assigned mods, and profile data.
+- **Profile saves and worlds**: Keeps profile-specific copies of `Saves`, `GeneratedWorlds`, and `SavesLocal` from `%APPDATA%\7DaysToDie`.
+- **Mod catalog**: Loads mod information from `7daystodiemods.com`, including details, categories, versions, images, file sizes, and update notes.
+- **Mod downloads**: Downloads mod archives with progress display and stores local manifests for installed mods.
+- **Mod installation**: Extracts `.zip` archives, detects installable mods through `ModInfo.xml`, and copies the mods assigned to the active profile into the game's `Mods` folder before launch.
+- **Servers**: Stores server name, address, port, optional password, and favorite status. Servers are joined through a `steam://connect/...` link.
+- **Appearance and language**: Provides dark and light themes as well as English and German application text.
+
+## Data Location
+
+7Loader stores its own data here:
 
 ```text
 %APPDATA%\7Loader
 ```
 
-Wichtige Unterordner und Dateien:
+Important files and folders:
 
-- `settings.json`: Einstellungen, Profile, Server, Sprache, Theme und Startoptionen.
-- `Mods\`: Heruntergeladene und installierte Mods inklusive `mod.json`-Manifesten.
-- `Cache\`: Mod-Katalog, Suchparameter, Mod-Details und Übersetzungs-Cache.
-- `Profiles\`: Profilbezogene Spielstände und Welten.
-- `Backups\`: Sicherungen vorhandener Live-Spielstände.
-- `Runtime\active-session.json`: Laufende oder wiederherzustellende Spielsitzung.
+- `settings.json`: settings, profiles, servers, language, theme, and launch options
+- `Mods\`: downloaded and installed mods, including local `mod.json` manifests
+- `Cache\`: mod catalog cache, search data, mod details, and translation cache
+- `Profiles\`: profile-specific saves and worlds
+- `Backups\`: backups of existing live save data
+- `Runtime\active-session.json`: information about a running or recoverable game session
 
-Beim Start kann ein vorhandener alter Datenordner `%APPDATA%\7DtD Launcher` automatisch nach `%APPDATA%\7Loader` migriert werden, sofern noch kein neuer 7Loader-Ordner existiert.
+If an older `%APPDATA%\7DtD Launcher` folder exists and `%APPDATA%\7Loader` does not yet exist, 7Loader can migrate the old data folder automatically.
 
-## Externe Dienste
+## How Profile Data Works
 
-Die Anwendung nutzt Netzwerkzugriff für:
+Before starting the game, 7Loader prepares the active profile:
 
-- `https://7daystodiemods.com`: Mod-Katalog, Mod-Detailseiten und Downloads.
-- `https://api.7daystodiemods.com`: API-basierte Download-Auflösung, wenn die Webseite entsprechende Daten bereitstellt.
-- `https://api.mymemory.translated.net`: Optionale Übersetzung von Mod-Beschreibungen.
+1. Existing live game data is backed up.
+2. The active profile's saves and worlds are placed into the normal 7 Days to Die data folder.
+3. The active profile's selected mods are copied into the game's `Mods` folder.
+4. The game is started.
 
-Kataloge, Detailtexte und Übersetzungen werden lokal gecacht, damit bereits geladene Informationen wiederverwendet werden können.
+After the game closes, 7Loader stores changed saves and worlds back into the active profile, cleans up the live data folder, and restores any original live data that existed before launch.
 
-## Voraussetzungen
+## External Services
 
-- Windows
-- .NET SDK 10.0 oder neuer mit Windows-Desktop-Unterstützung
-- Eine lokale Installation von 7 Days to Die
-- Netzwerkzugriff, wenn Mod-Katalog, Downloads oder Übersetzungen genutzt werden sollen
+7Loader uses network access for these services:
 
-## Laufzeitverhalten
+- `https://7daystodiemods.com`: mod catalog, mod pages, and downloads
+- `https://api.7daystodiemods.com`: API-based download resolution when available
+- `https://api.mymemory.translated.net`: optional translation of mod descriptions
 
-Beim Start lädt 7Loader Einstellungen, Theme, Sprache, Profile, Server, Mod-Cache und vorhandene installierte Mods. Falls kein Spielpfad gespeichert ist, versucht die Anwendung, typische Steam-Installationspfade und Steam-Bibliotheken zu durchsuchen. Ein gültiger Spielordner muss eine passende 7-Days-to-Die-Startdatei enthalten.
+Catalog entries, details, and translations are cached locally where possible.
 
-Beim Spielstart bereitet 7Loader zuerst die Profil-Spielstände vor, kopiert die dem Profil zugewiesenen Mods in den Spielordner und startet danach das Spiel oder den Serverbeitritt. Nach dem Beenden des Spiels speichert 7Loader die geänderten Profil-Daten zurück, räumt den Live-Datenordner auf und stellt vorher vorhandene Originaldaten wieder her.
+## Notes
 
-## Hinweise
-
-- Mod-Archive müssen aktuell als `.zip` vorliegen. Andere Archivformate werden abgelehnt.
-- Installierbare Mods werden über `ModInfo.xml` erkannt.
-- Der Launcher ersetzt den `Mods`-Ordner im Spielordner staging-basiert, damit nur die Mods des aktiven Profils aktiv sind.
-- Die Anwendung speichert Änderungen an Einstellungen, Profilen und Servern unmittelbar.
-- Es sind keine separaten Testprojekte im Repository vorhanden.
+- Mod archives must currently be `.zip` files.
+- Installable mods are detected through `ModInfo.xml`.
+- The launcher prepares the game's `Mods` folder for the active profile before starting the game.
+- Settings, profiles, and servers are saved immediately when changed.
